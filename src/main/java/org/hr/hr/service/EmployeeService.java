@@ -1,5 +1,6 @@
 package org.hr.hr.service;
 
+import org.hr.hr.dto.EmployeeRequest;
 import org.hr.hr.entity.Employee;
 import org.hr.hr.model.EmployeeModel;
 import org.hr.hr.repository.EmployeeRepository;
@@ -52,6 +53,21 @@ public class EmployeeService {
     //DELETE
     public void deleteById(String empId){
         employeeRepository.deleteById(empId);
+    }
+
+    public EmployeeModel create(EmployeeRequest request){
+        Employee entity = new Employee();
+        entity.setEmpId(request.getEmpId());
+        entity.setName(request.getName());
+        entity.setDeptNo(request.getDeptNo());
+
+        Employee saved = employeeRepository.save(entity);
+        EmployeeModel result = new EmployeeModel();
+        result.setEmpId(saved.getEmpId());
+        result.setName(saved.getName());
+        result.setDeptNo(saved.getDeptNo());
+
+        return result;
     }
 
 

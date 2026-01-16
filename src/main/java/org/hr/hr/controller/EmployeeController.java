@@ -1,5 +1,7 @@
 package org.hr.hr.controller;
 
+import jakarta.validation.Valid;
+import org.hr.hr.dto.EmployeeRequest;
 import org.hr.hr.model.EmployeeModel;
 import org.hr.hr.service.EmployeeService;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +24,9 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public EmployeeModel create(@RequestBody EmployeeModel model){
-
-        return employeeService.save(model);
+    public EmployeeModel create(@Valid @RequestBody EmployeeRequest request){
+        System.err.println("===");
+        return employeeService.create(request);
     }
 
     @PutMapping("/update")
