@@ -25,7 +25,6 @@ public class EmployeeController {
 
     @PostMapping
     public EmployeeModel create(@Valid @RequestBody EmployeeRequest request){
-        System.err.println("===");
         return employeeService.create(request);
     }
 

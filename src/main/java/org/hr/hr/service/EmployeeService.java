@@ -1,21 +1,27 @@
 package org.hr.hr.service;
 
+import org.apache.catalina.User;
 import org.hr.hr.dto.EmployeeRequest;
 import org.hr.hr.entity.Employee;
 import org.hr.hr.model.EmployeeModel;
 import org.hr.hr.repository.EmployeeRepository;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final RedisService redisService;
 
-    public EmployeeService(EmployeeRepository employeeRepository){
+    public EmployeeService(EmployeeRepository employeeRepository, RedisService redisService){
         this.employeeRepository = employeeRepository;
+        this.redisService = redisService;
     }
 
     //GET
@@ -70,5 +76,30 @@ public class EmployeeService {
         return result;
     }
 
+    public EmployeeModel getEmployee(Long id) {
+        //查詢Redis
+        EmployeeModel cachedEmployee = (EmployeeModel) redisService.get("user:"+id);
 
+        if (cachedEmployee != null){
+            System.out.println("--- 從 Redis 取得資料 (Cache Hit) ---");
+            return cachedEmployee;
+        }
+
+        //查詢DB
+        System.out.println("--- 從 DB 取得資料 (Cache Miss) ---");
+        Employee employee = employeeRepository.findById(String.valueOf(id)).orElse(null);
+
+        if (employee == null) {
+            return null;
+        }
+
+        // 3. 手動轉換 (Mapping): 把 Employee 轉成 EmployeeModel
+        EmployeeModel model = new EmployeeModel();
+        BeanUtils.copyProperties(employee, model);
+
+        redisService.set("user:" + id, model , 10, TimeUnit.MINUTES);
+
+
+        return model;
+    }
 }
