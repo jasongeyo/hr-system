@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### application.properties ###
+src/main/resources/application.properties
+
+### test ###
+src/main/java/org/hr/hr/test.http

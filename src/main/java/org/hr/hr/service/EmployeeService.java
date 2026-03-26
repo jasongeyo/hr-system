@@ -78,17 +78,20 @@ public class EmployeeService {
 
     public EmployeeModel getEmployee(Long id) {
         //查詢Redis
-        EmployeeModel cachedEmployee = (EmployeeModel) redisService.get("user:"+id);
+        try {
+            EmployeeModel cachedEmployee = (EmployeeModel) redisService.get("user:" + id);
 
-        if (cachedEmployee != null){
-            System.out.println("--- 從 Redis 取得資料 (Cache Hit) ---");
-            return cachedEmployee;
+            if (cachedEmployee != null) {
+                System.out.println("--- 從 Redis 取得資料 (Cache Hit) ---");
+                return cachedEmployee;
+            }
+        } catch (Exception e) {
+            System.out.println("--- Redis 無法連線，直接查DB ---");
         }
 
         //查詢DB
         System.out.println("--- 從 DB 取得資料 (Cache Miss) ---");
         Employee employee = employeeRepository.findById(String.valueOf(id)).orElse(null);
-
         if (employee == null) {
             return null;
         }
@@ -97,8 +100,11 @@ public class EmployeeService {
         EmployeeModel model = new EmployeeModel();
         BeanUtils.copyProperties(employee, model);
 
-        redisService.set("user:" + id, model , 10, TimeUnit.MINUTES);
-
+        try {
+            redisService.set("user:" + id, model, 10, TimeUnit.MINUTES);
+        } catch (Exception e) {
+            System.out.println("--- Redis 寫入失敗，略過 ---");
+        }
 
         return model;
     }
