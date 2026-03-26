@@ -5,6 +5,7 @@ import org.hr.hr.dto.EmployeeRequest;
 import org.hr.hr.model.EmployeeModel;
 import org.hr.hr.service.EmployeeService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -20,7 +21,16 @@ public class EmployeeController {
 
     @GetMapping
     public List<EmployeeModel> getAll() {
+
         return employeeService.findAll();
+    }
+
+    @GetMapping("/page")
+    public Page<EmployeeModel> getPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return employeeService.findPage(page, size);
     }
 
     @PostMapping
