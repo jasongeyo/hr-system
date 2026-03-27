@@ -1,12 +1,12 @@
 package org.hr.hr.service;
 
-import org.apache.catalina.User;
 import org.hr.hr.dto.EmployeeRequest;
 import org.hr.hr.entity.Employee;
 import org.hr.hr.model.EmployeeModel;
 import org.hr.hr.repository.EmployeeRepository;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hr.hr.repository.EmployeeSpec;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
@@ -41,19 +41,13 @@ public class EmployeeService {
         return result;
     }
 
-    //
+    //複合查詢
     public List<EmployeeModel> search (String deptNo, String name){
-        List<Employee> entities;
+        Specification<Employee> spec = Specification
+                .where(EmployeeSpec.hasDeptNo(deptNo))
+                .and(EmployeeSpec.nameContains(name));
 
-        if (deptNo != null ){
-            entities = employeeRepository.findByDeptNo(deptNo);
-        }
-        else if  (name != null){
-            entities = employeeRepository.findByNameContaining(name);
-        }
-        else {
-            entities = employeeRepository.findAll();
-        }
+        List<Employee> entities = employeeRepository.findAll(spec);
 
         List<EmployeeModel> result = new ArrayList<>();
         for (Employee e : entities) {
