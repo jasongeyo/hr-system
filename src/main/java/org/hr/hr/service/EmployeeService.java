@@ -41,6 +41,32 @@ public class EmployeeService {
         return result;
     }
 
+    //
+    public List<EmployeeModel> search (String deptNo, String name){
+        List<Employee> entities;
+
+        if (deptNo != null ){
+            entities = employeeRepository.findByDeptNo(deptNo);
+        }
+        else if  (name != null){
+            entities = employeeRepository.findByNameContaining(name);
+        }
+        else {
+            entities = employeeRepository.findAll();
+        }
+
+        List<EmployeeModel> result = new ArrayList<>();
+        for (Employee e : entities) {
+            EmployeeModel m = new EmployeeModel();
+            m.setEmpId(e.getEmpId());
+            m.setName(e.getName());
+            m.setDeptNo(e.getDeptNo());
+            result.add(m);
+        }
+        return result;
+    }
+
+    //分頁
     public Page<EmployeeModel> findPage(int page, int size) {
         return employeeRepository.findAll(PageRequest.of(page, size))
                 .map(e -> {

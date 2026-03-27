@@ -33,6 +33,14 @@ public class EmployeeController {
         return employeeService.findPage(page, size);
     }
 
+    @GetMapping("/search")
+    public List<EmployeeModel> search (
+        @RequestParam(required = false) String deptNo,
+        @RequestParam(required = false) String name )
+    {
+        return employeeService.search(deptNo, name);
+    }
+
     @PostMapping
     public EmployeeModel create(@Valid @RequestBody EmployeeRequest request){
         return employeeService.create(request);
