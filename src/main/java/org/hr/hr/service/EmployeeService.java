@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +74,7 @@ public class EmployeeService {
     }
 
     //POST/PUT
+    @Transactional
     public EmployeeModel save(EmployeeModel model){
         Employee entity = new Employee();
         entity.setEmpId(model.getEmpId());
@@ -90,10 +92,12 @@ public class EmployeeService {
     }
 
     //DELETE
+    @Transactional
     public void deleteById(String empId){
         employeeRepository.deleteById(empId);
     }
 
+    @Transactional
     public EmployeeModel create(EmployeeRequest request){
         Employee entity = new Employee();
         entity.setEmpId(request.getEmpId());
