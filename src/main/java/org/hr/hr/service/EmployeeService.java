@@ -113,7 +113,7 @@ public class EmployeeService {
         return result;
     }
 
-    public EmployeeModel getEmployee(Long id) {
+    public EmployeeModel getEmployee(String id) {
         //查詢Redis
         try {
             EmployeeModel cachedEmployee = (EmployeeModel) redisService.get("user:" + id);
@@ -128,7 +128,7 @@ public class EmployeeService {
 
         //查詢DB
         System.out.println("--- 從 DB 取得資料 (Cache Miss) ---");
-        Employee employee = employeeRepository.findById(String.valueOf(id)).orElse(null);
+        Employee employee = employeeRepository.findById(id).orElse(null);
         if (employee == null) {
             return null;
         }

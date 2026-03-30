@@ -33,6 +33,11 @@ public class EmployeeController {
         return employeeService.findPage(page, size);
     }
 
+    @GetMapping("/{empId}")
+    public EmployeeModel getEmployee(@PathVariable String empId) {
+        return employeeService.getEmployee(empId);
+    }
+
     @GetMapping("/search")
     public List<EmployeeModel> search (
         @RequestParam(required = false) String deptNo,
