@@ -1,0 +1,21 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+### 測試登入 API
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "password"
+}
+
+### 有帶 Token
+GET http://localhost:8080/employees
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc3NjA2MjE0NCwiZXhwIjoxNzc2MDY1NzQ0fQ.xoAvyMzH2TCpvpEtCxeolIdGmSNkBSG87kKpu9ET4UI
+
+###  沒帶 Token
+GET http://localhost:8080/employees
+
