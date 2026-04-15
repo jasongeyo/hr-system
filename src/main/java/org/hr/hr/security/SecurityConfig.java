@@ -22,7 +22,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())   //關閉 CSRF
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))   //不要用 Session，用 JWT
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll().anyRequest().authenticated())   //定義白名單與保護區
+                .authorizeHttpRequests(auth -> auth.requestMatchers( "/auth/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/v3/api-docs/**",
+                        "/v3/api-docs").permitAll().anyRequest().authenticated())   //定義白名單與保護區
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) //JWT至前
                 ;
 
